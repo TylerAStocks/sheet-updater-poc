@@ -1,14 +1,17 @@
 import { Field, Input, Label, Switch } from "@headlessui/react";
 
 
-const Switcher: React.FC<{name: string, onChange?: any, value: any}> = ({name, onChange, value}) => {
+const Switcher: React.FC<{label: string, name: string, onChange?: any, value: any, onBlur?: any, error?:string, touched?: boolean}> = ({label, name, onChange, value, onBlur, error, touched}) => {
 
 
     return (
-            <Field>
-                <Label> {name} </Label>
-                <Input style={{border: 'solid'}} onChange={onChange} value={value}/>
-            </Field>
+        <div>
+        <label>{label}</label>
+        <input name={name} value={value} onChange={onChange} onBlur={onBlur} style={{border: 'solid'}}/>
+        {error && touched ? (
+                        <div style={{color: 'red'}}>{error}</div>
+                    ) : null}
+        </div>
     )
 }
 

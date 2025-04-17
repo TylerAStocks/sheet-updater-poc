@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import { postSheetData } from "../actions";
 import DatePicker from "react-datepicker";
 import { format, formatDistance } from "date-fns";
+import * as Yup from 'yup';
 
 
 
@@ -52,6 +53,25 @@ function formatPostData(values: FormValues, days: number, formattedDates: string
     
 }
 
+
+
+const FormSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    agency: Yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    room: Yup.number().required('Required'),
+    vuelos: Yup.string(),
+    quantity: Yup.number().required('Required'),
+    allergy: Yup.string(),
+  });
+
+
+
 const initialFormValues: FormValues = { //!!ORDER MATTERS!!
     name: '', 
     agency: '', 
@@ -90,17 +110,17 @@ export default function ApplicantForm() {
         const formattedEnd = format(endDate, "MM/dd/yyyy")
         const postData = formatPostData(values, days, [formattedStart, formattedEnd])
 
-        console.log('postData: ', postData);
-
         postSheetData(postData);
     }
+
 
 
     return(
         <Formik
             initialValues={initialFormValues}
+            validationSchema={FormSchema}
             onSubmit={(values) => handleSubmitForm(values)}>
-            {({values, handleSubmit, handleChange, setFieldValue}) => {
+            {({values, handleSubmit, handleChange, setFieldValue, isValid, errors, touched, handleBlur}) => {
 
                 const handleDateChange = (date, isStart) => {
                     if (isStart) {
@@ -115,15 +135,13 @@ export default function ApplicantForm() {
                 <Fieldset className="flex flex-col space-y-6 rounded-xl bg-black/5 p-6 sm:p-10">
                     <Legend className="text-base/7 font-semibold text-black">Volunteer details</Legend>
 
-                    <div className="flex flex-row">
-                    <label>Name</label>
-                    <input name="name" value={values.name} onChange={handleChange} style={{border: 'solid'}}/>
-                    </div>
+                    <TextField label="Name" name="name" value={values.name} onChange={handleChange} onBlur={handleBlur} error={errors.name} touched={touched.name}/>
+                    
 
-                    <div>
-                    <label>Agency</label>
-                    <input name="agency" value={values.agency} onChange={handleChange} style={{border: 'solid'}}/>
-                    </div>
+                    <TextField label="Agency" name="agency" value={values.agency} onChange={handleChange} onBlur={handleBlur} error={errors.agency} touched={touched.agency}/>
+                    {errors.agency && touched.agency ? (
+                        <div>{errors.agency}</div>
+                    ) : null}
 
                     <div className="flex flex-row">
                     <label>Check-In</label>
@@ -132,25 +150,11 @@ export default function ApplicantForm() {
                     <DatePicker className='border-solid' selected={endDate} onChange={(val) => handleDateChange(val, false)}/>
                     </div>
 
-                    <div>
-                    <label>Room</label>
-                    <input name="room" value={values.room} onChange={handleChange} style={{border: 'solid'}}/>
-                    </div>
+                    <TextField label="Room" name="room" value={values.room} onChange={handleChange} onBlur={handleBlur} error={errors.room} touched={touched.room}/>
 
-                    <div>
-                    <label>Vuelos</label>
-                    <input name="vuelos" value={values.vuelos} onChange={handleChange} style={{border: 'solid'}}/>
-                    </div>
+                    <TextField label="Vuelos" name="vuelos" value={values.vuelos} onChange={handleChange} onBlur={handleBlur} error={errors.vuelos} touched={touched.vuelos}/>
 
-                    <div>
-                    <label>Paid</label>
-                    <input type='checkbox' name="paid" onChange={handleChange}/>
-                    </div>
-
-                    <div>
-                    <label>Group Quantity</label>
-                    <input name="quantity" onChange={handleChange} style={{border: 'solid'}}/>
-                    </div>
+                    <TextField label="Group Quantity" name="quantity" value={values.quantity} onChange={handleChange} onBlur={handleBlur} error={errors.quantity} touched={touched.quantity}/>
 
                     <Fieldset>
                     <label>Vegetarian</label>
@@ -165,13 +169,10 @@ export default function ApplicantForm() {
                     <label>Gluten-Free</label>
                     <input type='checkbox' name="glutenFree" onChange={handleChange}/>
 
-                    <div>
-                    <label>Allergies</label>
-                    <input name="agency" value={values.allergy} onChange={handleChange} style={{border: 'solid'}}/>
-                    </div>
+                    <TextField label="Allergies" name="allergy" value={values.allergy} onChange={handleChange} onBlur={handleBlur} error={errors.allergy} touched={touched.allergy}/>
                     </Fieldset>
                 </Fieldset>
-                <button type='submit' style={{background: 'blue'}}> Submit </button>
+                <button type='submit' style={{background: isValid ? 'blue' : 'red'}}> Submit </button>
                 </form>
             )}}
         </Formik>
