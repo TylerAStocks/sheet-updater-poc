@@ -1,13 +1,13 @@
 import { Field, Input, Label, Switch } from "@headlessui/react";
 
 
-const Switcher: React.FC<{label: string, name: string, onChange?: any, value: any, onBlur?: any, error?:string, touched?: boolean}> = ({label, name, onChange, value, onBlur, error, touched}) => {
+const TextField: React.FC<{label: string, name: string, onChange?: any, value: any, onBlur?: any, error?:string, touched?: boolean}> = ({label, name, onChange, value, onBlur, error, touched}) => {
 
 
     return (
-        <div>
+        <div className="flex flex-col max-w-100px m-2" style={{margin: '3px', maxWidth: '120px'}}>
         <label>{label}</label>
-        <input name={name} value={value} onChange={onChange} onBlur={onBlur} style={{border: 'solid'}}/>
+        <input className="max-w-100" name={name} value={value} onChange={onChange} onBlur={onBlur} style={{border: 'solid', borderColor: 'gray' , borderRadius: '6px', padding: '3px', background: 'white'}}/>
         {error && touched ? (
                         <div style={{color: 'red'}}>{error}</div>
                     ) : null}
@@ -16,4 +16,4 @@ const Switcher: React.FC<{label: string, name: string, onChange?: any, value: an
 }
 
 
-export default Switcher;
+export default TextField;
