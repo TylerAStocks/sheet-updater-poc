@@ -126,7 +126,12 @@ export default function ApplicantForm() {
             initialValues={initialFormValues}
             isInitialValid={false}
             validationSchema={FormSchema}
-            onSubmit={(values) => handleSubmitForm(values)}>
+            onSubmit={(values, { resetForm }) => {
+
+                handleSubmitForm(values)
+                resetForm();
+          
+          }}>
             {({values, handleSubmit, handleChange, setFieldValue, isValid, errors, touched, handleBlur}) => {
 
                 const handleDateChange = (date, isStart) => {
